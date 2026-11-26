@@ -37,3 +37,17 @@ Re-run `.\apply-theme.ps1 -ForceStopApp` anytime after Antigravity updates. Pres
 ```powershell
 .\restore-theme.ps1 -ForceStopApp
 ```
+
+### Auto-Heal After Updates (Approach 1 + Approach 2)
+To never lose your theme after Antigravity auto-updates:
+```powershell
+.\install-auto-sync.ps1
+```
+This integrates two complementary layers into `WESyncServer.js` and creates an **Antigravity Dark Glass** Desktop shortcut:
+1. **Smart Launcher + Auto-Healer** (`launch-antigravity.ps1`, `Start-Antigravity-Glass.vbs`): automatically detects when an update overwrote `app.asar` and silently re-applies the patch.
+2. **Zero-Patch CDP Auto-Injector** (`cdp-injector.js`): connects to `--remote-debugging-port=9229` to inject CSS/JS live even before `app.asar` is re-patched, and hot-reloads CSS edits on disk.
+
+To uninstall the `WESyncServer.js` integration:
+```powershell
+.\install-auto-sync.ps1 -Uninstall
+```
