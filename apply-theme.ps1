@@ -203,24 +203,28 @@ function attachDarkGlassTheme(hubContents) {
     } catch (_) {}
 
     let lastCssKey;
-    const applyThemeNow = async () => {
-        if (hubContents.isDestroyed?.()) return;
-        try {
-            if (fs.existsSync(cssFile)) {
-                const css = fs.readFileSync(cssFile, 'utf-8');
-                const nextKey = await hubContents.insertCSS(css, { cssOrigin: 'user' }).catch(() => undefined);
-                if (lastCssKey && lastCssKey !== nextKey) {
-                    await hubContents.removeInsertedCSS?.(lastCssKey).catch(() => undefined);
+    let applyQueue = Promise.resolve();
+    const applyThemeNow = () => {
+        applyQueue = applyQueue.then(async () => {
+            if (hubContents.isDestroyed?.()) return;
+            try {
+                if (fs.existsSync(cssFile)) {
+                    const css = fs.readFileSync(cssFile, 'utf-8');
+                    const nextKey = await hubContents.insertCSS(css, { cssOrigin: 'user' }).catch(() => undefined);
+                    if (lastCssKey && lastCssKey !== nextKey) {
+                        await hubContents.removeInsertedCSS?.(lastCssKey).catch(() => undefined);
+                    }
+                    if (nextKey) lastCssKey = nextKey;
                 }
-                if (nextKey) lastCssKey = nextKey;
+                if (fs.existsSync(jsFile)) {
+                    const script = fs.readFileSync(jsFile, 'utf-8');
+                    await hubContents.executeJavaScript(script, true).catch(() => undefined);
+                }
+            } catch (err) {
+                console.warn('[DarkGlassTheme] Injection error:', err?.message ?? String(err));
             }
-            if (fs.existsSync(jsFile)) {
-                const script = fs.readFileSync(jsFile, 'utf-8');
-                await hubContents.executeJavaScript(script, true).catch(() => undefined);
-            }
-        } catch (err) {
-            console.warn('[DarkGlassTheme] Injection error:', err?.message ?? String(err));
-        }
+        });
+        return applyQueue;
     };
 
     hubContents.on('dom-ready', () => { void applyThemeNow(); });

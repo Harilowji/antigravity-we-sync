@@ -108,9 +108,8 @@ body[data-agy-theme] .agy-overlay {
   background: rgba(8, 10, 16, var(--we-overlay-alpha, 0.28)) !important;
 }
 
-/* Giu app React nam tren lop video/overlay */
-body > #root,
-body > div:not([id^="we-"]) {
+/* Giu app React nam tren lop video/overlay (khong ghi de position:fixed cua portal) */
+body > #root {
   position: relative;
   z-index: 1;
 }
@@ -218,9 +217,9 @@ body[data-agy-theme] .agy-sidebar-row:hover {
 
 body[data-agy-theme] .agy-sidebar-row[data-selected="true"],
 body[data-agy-theme].dark .agy-sidebar-row[data-selected="true"] {
-  background-color: rgba(255, 255, 255, 0.13) !important;
-  --row-bg: rgba(255, 255, 255, 0.13) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
+  background-color: rgba(125, 211, 252, 0.12) !important;
+  --row-bg: rgba(125, 211, 252, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.24) !important;
 }
 
 body[data-agy-theme] .agy-sidebar-raised,
@@ -319,8 +318,8 @@ body[data-agy-theme].dark .surface-composer > .surface-composer-card {
 }
 
 body[data-agy-theme] .surface-composer:focus-within {
-  border-color: rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+  border-color: rgba(125, 211, 252, 0.36) !important;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.56), 0 0 18px rgba(125, 211, 252, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
 }
 
 /* Dropdown chon Model, Usage/Quota Popup, Settings Modal, Context Menu, Tooltip */
