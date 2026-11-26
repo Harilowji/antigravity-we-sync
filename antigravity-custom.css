@@ -1,6 +1,8 @@
 /* ============================================================================
- * Antigravity Desktop - Dark Glass Anime Theme (No Wide-Area Backdrop Blur)
- * Target: Antigravity Desktop Electron Hub (v2.35.1)
+ * Antigravity Desktop - Dark Glass Anime Theme v2.0
+ * - Zero wide-area backdrop-filter blur (GPU friendly)
+ * - Full .agy-shell, Titlebar, Scroll-Mask, Browser-Hole & Standalone support
+ * - Subtitle-grade text contour for high legibility on bright anime scenes
  * ============================================================================ */
 
 :root,
@@ -9,6 +11,9 @@ body,
 body[data-agy-theme],
 body[data-agy-theme].dark {
   color-scheme: dark !important;
+  --we-overlay-alpha: 0.28;
+  --we-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.92), 0 0 8px rgba(0, 0, 0, 0.65);
+
   --background: transparent !important;
   --color-background: transparent !important;
   --body-background: transparent !important;
@@ -16,7 +21,7 @@ body[data-agy-theme].dark {
   --shell-canvas: transparent !important;
   --home-glow: transparent !important;
 
-  /* Sidebar: kinh toi nhe de chu luon ro */
+  /* Sidebar: kinh toi nhe de chu danh sach chat luon ro */
   --sidebar: rgba(14, 16, 24, 0.55) !important;
   --color-sidebar: rgba(14, 16, 24, 0.55) !important;
   --sidebar-secondary: rgba(255, 255, 255, 0.08) !important;
@@ -45,8 +50,8 @@ body[data-agy-theme].dark {
   --foreground: #f4f6fb !important;
   --color-foreground: #f4f6fb !important;
   --secondary-foreground: rgba(235, 240, 248, 0.90) !important;
-  --muted-foreground: rgba(196, 206, 224, 0.78) !important;
-  --placeholder: rgba(176, 186, 206, 0.56) !important;
+  --muted-foreground: rgba(196, 206, 224, 0.80) !important;
+  --placeholder: rgba(176, 186, 206, 0.58) !important;
 }
 
 /* Nen toi chong chop trang phia sau video */
@@ -55,7 +60,7 @@ html {
   background-image: none !important;
 }
 
-/* Tat toan bo backdrop-filter de tranh nghen GPU */
+/* Tuyet doi tat backdrop-filter tren toan bo UI de tranh nghen GPU */
 *,
 *::before,
 *::after,
@@ -69,8 +74,19 @@ body[data-agy-theme] .agy-overlay {
 }
 
 /* ============================================================================
- * 1. LOP NEN VIDEO / ANH & OVERLAY TOI NHE (z-index: 0)
+ * 1. LOP NEN VIDEO / ANH & OVERLAY TOI NHE + CAT LO BROWSER HOLE
  * ============================================================================ */
+#we-bg-layer {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  clip-path: var(--we-hole-clip, none) !important;
+}
+
 #we-bg-video,
 #we-bg-image {
   position: fixed !important;
@@ -89,7 +105,7 @@ body[data-agy-theme] .agy-overlay {
   height: 100vh !important;
   z-index: 0 !important;
   pointer-events: none !important;
-  background: rgba(8, 10, 16, 0.28) !important;
+  background: rgba(8, 10, 16, var(--we-overlay-alpha, 0.28)) !important;
 }
 
 /* Giu app React nam tren lop video/overlay */
@@ -100,11 +116,14 @@ body > div:not([id^="we-"]) {
 }
 
 /* ============================================================================
- * 2. NEN CHINH CUA APP & KHUNG CHAT TRONG SUOT 100%
+ * 2. NEN CHINH CUA APP, TITLEBAR, KHUNG CHAT & STANDALONE PAGES TRONG SUOT 100%
  * ============================================================================ */
 body,
 #root,
 main,
+body.theme-standalone,
+body.theme-standalone #root,
+body.theme-standalone .bg-background,
 body[data-agy-theme] .agy-shell,
 body[data-agy-theme] .agy-sheet,
 body[data-agy-theme] .agy-sheet[data-sheet-inset],
@@ -119,6 +138,7 @@ body[data-agy-theme] .agy-sheet[data-sheet-inset],
 [data-split-panes] .agy-sheet[data-sheet-inset] [data-tiling-pane] [data-testid="pane-titlebar-toolbar"],
 [data-split-panes] .agy-sheet[data-sheet-inset] [data-testid="tiling-splitter"] > [data-splitter-band],
 [data-split-panes] .agy-sheet[data-sheet-inset] [data-main-content-body] > [data-testid="bottom-terminal-panel"],
+.agy-shell [class*="@container/titlebar"],
 .agy-home,
 .bg-background,
 .bg-shell {
@@ -127,6 +147,32 @@ body[data-agy-theme] .agy-sheet[data-sheet-inset],
   background-image: none !important;
 }
 
+/* Xoa 2 thanh gradient den top/bottom che vung cuon chat */
+.agy-shell div.pointer-events-none.absolute[class*="bottom-0"],
+.agy-shell div.pointer-events-none.absolute[class*="top-0"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Lam mo mep tren/duoi khi cuon chat mem mai */
+.agy-shell .overflow-y-auto {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, #000 14px, #000 calc(100% - 12px), transparent 100%) !important;
+  mask-image: linear-gradient(to bottom, transparent 0px, #000 14px, #000 calc(100% - 12px), transparent 100%) !important;
+}
+
+/* Cat sach vet bong doc mep trai khi sidebar dang thu gon */
+.agy-shell .surface-opaque.pointer-events-none,
+.agy-shell [role="dialog"].pointer-events-none,
+.agy-shell .surface-opaque[aria-hidden="true"],
+.agy-shell .surface-opaque[class*="-translate-x"],
+.agy-shell .surface-opaque[class*="translate-x-full"] {
+  box-shadow: none !important;
+  border: none !important;
+  border-color: transparent !important;
+}
+
+/* Giu lo trong cho built-in browser split pane */
 body[data-has-browser-hole="true"] [data-main-content-body]:not([data-has-browser-hole="true"]),
 body[data-has-browser-hole="true"] [data-pane-id]:not([data-has-browser-hole="true"]) {
   background-color: transparent !important;
@@ -144,6 +190,8 @@ body[data-has-browser-hole="true"] .agy-sheet[data-sheet-inset] :is([data-main-c
 .agy-inset-shell > [data-split-root] > :first-child:has(.agy-sidebar-row),
 .agy-inset-shell [data-peek-surface="open"],
 .agy-inset-shell [data-peek-surface] > div,
+.agy-shell [data-sidebar="true"],
+.agy-shell .bg-sidebar:not(.surface-opaque),
 .bg-sidebar,
 aside {
   background-color: rgba(14, 16, 24, 0.55) !important;
@@ -151,6 +199,8 @@ aside {
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
+.agy-shell .bg-sidebar:not(.surface-opaque) .bg-sidebar:not(.surface-opaque),
+.agy-shell [data-sidebar="true"] .bg-sidebar:not(.surface-opaque),
 body[data-agy-theme] .agy-sheet .agy-titlebar.bg-sidebar {
   background-color: transparent !important;
   border-right: none !important;
@@ -158,19 +208,19 @@ body[data-agy-theme] .agy-sheet .agy-titlebar.bg-sidebar {
 
 body[data-agy-theme] .agy-sidebar-row,
 body[data-agy-theme] [data-testid^="sidebar-agent-row-"] {
-  color: rgba(244, 246, 251, 0.92) !important;
+  color: rgba(244, 246, 251, 0.94) !important;
   border-radius: 10px !important;
 }
 
 body[data-agy-theme] .agy-sidebar-row:hover {
-  background-color: rgba(255, 255, 255, 0.07) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 body[data-agy-theme] .agy-sidebar-row[data-selected="true"],
 body[data-agy-theme].dark .agy-sidebar-row[data-selected="true"] {
-  background-color: rgba(255, 255, 255, 0.12) !important;
-  --row-bg: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09) !important;
+  background-color: rgba(255, 255, 255, 0.13) !important;
+  --row-bg: rgba(255, 255, 255, 0.13) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.10) !important;
 }
 
 body[data-agy-theme] .agy-sidebar-raised,
@@ -180,7 +230,72 @@ body[data-agy-theme].dark .agy-sidebar-raised {
 }
 
 /* ============================================================================
- * 4. THANH NHAP PROMPT, DROPDOWN CHON MODEL & POPUP USAGE
+ * 4. NOI DUNG CHAT, BUBBLE, CODE & DO TUONG PHAN CHU KIEU PHU DE
+ * ============================================================================ */
+.agy-shell .text-foreground,
+.agy-shell [class*="@container/titlebar"] [data-testid="breadcrumb-segment"],
+.agy-shell [class*="@container/titlebar"] span,
+.agy-shell [class*="@container/titlebar"] button {
+  color: #f4f6fb !important;
+  text-shadow: var(--we-text-shadow) !important;
+}
+
+.agy-shell .text-muted-foreground,
+.agy-shell .text-secondary-foreground,
+.agy-shell time,
+.agy-shell small {
+  color: rgba(220, 230, 245, 0.84) !important;
+  text-shadow: var(--we-text-shadow) !important;
+}
+
+.agy-shell [data-testid="agent-response"] {
+  color: #f4f6fb !important;
+  text-shadow: var(--we-text-shadow) !important;
+}
+
+.agy-shell [data-testid="agent-response"] :is(p, li, td, th, blockquote) {
+  color: rgba(240, 244, 252, 0.94) !important;
+  text-shadow: var(--we-text-shadow) !important;
+}
+
+.agy-shell [data-testid="agent-response"] :is(h1, h2, h3, h4, strong, b) {
+  color: #ffffff !important;
+}
+
+.agy-shell .agy-user-bubble-frame {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.agy-shell .agy-user-bubble {
+  background: rgba(18, 20, 28, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+.agy-shell [data-testid="agent-response"] :not(pre) > code {
+  background: rgba(8, 12, 24, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 6px !important;
+  padding: 1px 5px !important;
+  color: #bae6fd !important;
+  text-shadow: none !important;
+}
+
+.agy-shell [data-testid="agent-response"] pre,
+body[data-agy-theme] .agy-card,
+body[data-agy-theme] .artifact-card,
+body[data-agy-theme] .agy-callout {
+  background-color: rgba(12, 15, 24, 0.74) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 12px !important;
+  text-shadow: none !important;
+}
+
+/* ============================================================================
+ * 5. THANH NHAP PROMPT, DROPDOWN CHON MODEL & POPUP USAGE
  * ============================================================================ */
 #antigravity\.agentSidePanelInputBox,
 body[data-agy-theme] .surface-composer,
@@ -208,20 +323,23 @@ body[data-agy-theme] .surface-composer:focus-within {
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
 }
 
-/* Dropdown chon Model, Usage/Quota Popup, Context Menu, Command Palette, Tooltip */
+/* Dropdown chon Model, Usage/Quota Popup, Settings Modal, Context Menu, Tooltip */
 body[data-agy-theme] .agy-overlay,
 body[data-agy-theme] .surface-glass,
-body[data-agy-theme] .surface-opaque,
+body[data-agy-theme] .surface-opaque:not(.pointer-events-none):not([aria-hidden="true"]),
 body[data-agy-theme] .agy-fastpick.surface-glass,
 body[data-agy-theme] .quick-input-widget.surface-glass,
 body[data-agy-theme] .agy-takeover-card,
 body[data-agy-theme] .compact-tooltip,
+body.theme-standalone .bg-card,
+body.theme-standalone .bg-muted,
+.settings-modal-container,
 [data-popover-popup],
 [data-testid="context-menu-popup"],
 [data-testid="context-menu-submenu-popup"],
 [role="menu"],
 [role="listbox"],
-[role="dialog"],
+[role="dialog"]:not(.pointer-events-none):not([aria-hidden="true"]):not([data-state="closed"]),
 .animate-overview-panel {
   background: rgba(18, 20, 28, 0.86) !important;
   background-color: rgba(18, 20, 28, 0.86) !important;
@@ -229,35 +347,26 @@ body[data-agy-theme] .compact-tooltip,
   border-radius: 12px !important;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.54), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
   color: #f4f6fb !important;
-}
-
-/* Card / Block noi dung trong khung chat giu do doc tot */
-body[data-agy-theme] .agy-card,
-body[data-agy-theme] .artifact-card,
-body[data-agy-theme] .agy-callout,
-pre,
-code {
-  border-color: rgba(255, 255, 255, 0.09) !important;
-}
-
-body[data-agy-theme] .agy-card,
-body[data-agy-theme] .artifact-card,
-body[data-agy-theme] .agy-callout {
-  background-color: rgba(16, 18, 26, 0.62) !important;
-}
-
-/* Chu trang/xam sang do tuong phan cao */
-body[data-agy-theme],
-body[data-agy-theme] textarea,
-body[data-agy-theme] input,
-[data-popover-popup] *,
-[role="menu"] *,
-[role="listbox"] *,
-[role="dialog"] * {
-  color: inherit;
+  text-shadow: none !important;
 }
 
 body[data-agy-theme] textarea::placeholder,
 body[data-agy-theme] input::placeholder {
-  color: rgba(186, 196, 214, 0.58) !important;
+  color: rgba(186, 196, 214, 0.62) !important;
+}
+
+/* Thanh cuon mong gon */
+::-webkit-scrollbar {
+  width: 7px !important;
+  height: 7px !important;
+}
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-radius: 999px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.30) !important;
 }
