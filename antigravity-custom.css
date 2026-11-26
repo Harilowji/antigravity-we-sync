@@ -1,0 +1,263 @@
+/* ============================================================================
+ * Antigravity Desktop - Dark Glass Anime Theme (No Wide-Area Backdrop Blur)
+ * Target: Antigravity Desktop Electron Hub (v2.35.1)
+ * ============================================================================ */
+
+:root,
+html,
+body,
+body[data-agy-theme],
+body[data-agy-theme].dark {
+  color-scheme: dark !important;
+  --background: transparent !important;
+  --color-background: transparent !important;
+  --body-background: transparent !important;
+  --shell: transparent !important;
+  --shell-canvas: transparent !important;
+  --home-glow: transparent !important;
+
+  /* Sidebar: kinh toi nhe de chu luon ro */
+  --sidebar: rgba(14, 16, 24, 0.55) !important;
+  --color-sidebar: rgba(14, 16, 24, 0.55) !important;
+  --sidebar-secondary: rgba(255, 255, 255, 0.08) !important;
+  --sidebar-muted: rgba(255, 255, 255, 0.05) !important;
+
+  /* Prompt, Model Dropdown, Usage Popup */
+  --card: rgba(18, 20, 28, 0.86) !important;
+  --color-card: rgba(18, 20, 28, 0.86) !important;
+  --popover: rgba(18, 20, 28, 0.86) !important;
+  --muted: rgba(18, 20, 28, 0.72) !important;
+  --glass: rgba(18, 20, 28, 0.86) !important;
+  --onyx-frame: rgba(18, 20, 28, 0.86) !important;
+  --onyx-raised: rgba(18, 20, 28, 0.86) !important;
+  --onyx-selected: rgba(255, 255, 255, 0.11) !important;
+
+  /* Vien mong & chu tuong phan cao */
+  --border: rgba(255, 255, 255, 0.09) !important;
+  --color-border: rgba(255, 255, 255, 0.09) !important;
+  --card-border: rgba(255, 255, 255, 0.09) !important;
+  --color-card-border: rgba(255, 255, 255, 0.09) !important;
+  --glass-border: rgba(255, 255, 255, 0.09) !important;
+  --card-edge: rgba(255, 255, 255, 0.09) !important;
+  --glass-highlight: rgba(255, 255, 255, 0.06) !important;
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+
+  --foreground: #f4f6fb !important;
+  --color-foreground: #f4f6fb !important;
+  --secondary-foreground: rgba(235, 240, 248, 0.90) !important;
+  --muted-foreground: rgba(196, 206, 224, 0.78) !important;
+  --placeholder: rgba(176, 186, 206, 0.56) !important;
+}
+
+/* Nen toi chong chop trang phia sau video */
+html {
+  background-color: #0b0d17 !important;
+  background-image: none !important;
+}
+
+/* Tat toan bo backdrop-filter de tranh nghen GPU */
+*,
+*::before,
+*::after,
+body[data-agy-theme] .surface-glass,
+body[data-agy-theme] .surface-composer > .surface-composer-card,
+body[data-agy-theme] .agy-fastpick.surface-glass,
+body[data-agy-theme] .quick-input-widget.surface-glass,
+body[data-agy-theme] .agy-overlay {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ============================================================================
+ * 1. LOP NEN VIDEO / ANH & OVERLAY TOI NHE (z-index: 0)
+ * ============================================================================ */
+#we-bg-video,
+#we-bg-image {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  object-fit: cover !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+#we-bg-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background: rgba(8, 10, 16, 0.28) !important;
+}
+
+/* Giu app React nam tren lop video/overlay */
+body > #root,
+body > div:not([id^="we-"]) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+ * 2. NEN CHINH CUA APP & KHUNG CHAT TRONG SUOT 100%
+ * ============================================================================ */
+body,
+#root,
+main,
+body[data-agy-theme] .agy-shell,
+body[data-agy-theme] .agy-sheet,
+body[data-agy-theme] .agy-sheet[data-sheet-inset],
+.agy-inset-shell,
+.agy-sheet[data-sheet-inset] [data-main-content-body],
+.agy-sheet[data-sheet-inset] [data-main-content-header],
+.agy-sheet[data-sheet-inset] [data-main-content-header] > *,
+.agy-inset-shell [data-side-panel-body],
+.agy-inset-shell [data-side-panel-strip],
+[data-split-panes] .agy-sheet[data-sheet-inset] [data-tiling-pane],
+[data-split-panes] .agy-sheet[data-sheet-inset] [data-tiling-pane] > [data-pane-id],
+[data-split-panes] .agy-sheet[data-sheet-inset] [data-tiling-pane] [data-testid="pane-titlebar-toolbar"],
+[data-split-panes] .agy-sheet[data-sheet-inset] [data-testid="tiling-splitter"] > [data-splitter-band],
+[data-split-panes] .agy-sheet[data-sheet-inset] [data-main-content-body] > [data-testid="bottom-terminal-panel"],
+.agy-home,
+.bg-background,
+.bg-shell {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body[data-has-browser-hole="true"] [data-main-content-body]:not([data-has-browser-hole="true"]),
+body[data-has-browser-hole="true"] [data-pane-id]:not([data-has-browser-hole="true"]) {
+  background-color: transparent !important;
+}
+
+body[data-has-browser-hole="true"] .agy-sheet[data-sheet-inset] :is([data-main-content-body], [data-side-panel-body]) {
+  box-shadow: none !important;
+}
+
+/* ============================================================================
+ * 3. SIDEBAR BEN TRAI - KINH TOI NHE rgba(14, 16, 24, 0.55)
+ * ============================================================================ */
+[data-testid="sidebar"],
+[data-testid="settings-sidebar"],
+.agy-inset-shell > [data-split-root] > :first-child:has(.agy-sidebar-row),
+.agy-inset-shell [data-peek-surface="open"],
+.agy-inset-shell [data-peek-surface] > div,
+.bg-sidebar,
+aside {
+  background-color: rgba(14, 16, 24, 0.55) !important;
+  background-image: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body[data-agy-theme] .agy-sheet .agy-titlebar.bg-sidebar {
+  background-color: transparent !important;
+  border-right: none !important;
+}
+
+body[data-agy-theme] .agy-sidebar-row,
+body[data-agy-theme] [data-testid^="sidebar-agent-row-"] {
+  color: rgba(244, 246, 251, 0.92) !important;
+  border-radius: 10px !important;
+}
+
+body[data-agy-theme] .agy-sidebar-row:hover {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+body[data-agy-theme] .agy-sidebar-row[data-selected="true"],
+body[data-agy-theme].dark .agy-sidebar-row[data-selected="true"] {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  --row-bg: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09) !important;
+}
+
+body[data-agy-theme] .agy-sidebar-raised,
+body[data-agy-theme].dark .agy-sidebar-raised {
+  background-color: rgba(22, 25, 36, 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09), 0 2px 8px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* ============================================================================
+ * 4. THANH NHAP PROMPT, DROPDOWN CHON MODEL & POPUP USAGE
+ * ============================================================================ */
+#antigravity\.agentSidePanelInputBox,
+body[data-agy-theme] .surface-composer,
+body[data-agy-theme].dark .surface-composer,
+[data-side-panel-composer] .surface-composer {
+  background: rgba(18, 20, 28, 0.86) !important;
+  background-color: rgba(18, 20, 28, 0.86) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  color: #f4f6fb !important;
+}
+
+body[data-agy-theme] .surface-composer > .surface-composer-card,
+body[data-agy-theme].dark .surface-composer > .surface-composer-card {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+}
+
+body[data-agy-theme] .surface-composer:focus-within {
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+}
+
+/* Dropdown chon Model, Usage/Quota Popup, Context Menu, Command Palette, Tooltip */
+body[data-agy-theme] .agy-overlay,
+body[data-agy-theme] .surface-glass,
+body[data-agy-theme] .surface-opaque,
+body[data-agy-theme] .agy-fastpick.surface-glass,
+body[data-agy-theme] .quick-input-widget.surface-glass,
+body[data-agy-theme] .agy-takeover-card,
+body[data-agy-theme] .compact-tooltip,
+[data-popover-popup],
+[data-testid="context-menu-popup"],
+[data-testid="context-menu-submenu-popup"],
+[role="menu"],
+[role="listbox"],
+[role="dialog"],
+.animate-overview-panel {
+  background: rgba(18, 20, 28, 0.86) !important;
+  background-color: rgba(18, 20, 28, 0.86) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.54), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  color: #f4f6fb !important;
+}
+
+/* Card / Block noi dung trong khung chat giu do doc tot */
+body[data-agy-theme] .agy-card,
+body[data-agy-theme] .artifact-card,
+body[data-agy-theme] .agy-callout,
+pre,
+code {
+  border-color: rgba(255, 255, 255, 0.09) !important;
+}
+
+body[data-agy-theme] .agy-card,
+body[data-agy-theme] .artifact-card,
+body[data-agy-theme] .agy-callout {
+  background-color: rgba(16, 18, 26, 0.62) !important;
+}
+
+/* Chu trang/xam sang do tuong phan cao */
+body[data-agy-theme],
+body[data-agy-theme] textarea,
+body[data-agy-theme] input,
+[data-popover-popup] *,
+[role="menu"] *,
+[role="listbox"] *,
+[role="dialog"] * {
+  color: inherit;
+}
+
+body[data-agy-theme] textarea::placeholder,
+body[data-agy-theme] input::placeholder {
+  color: rgba(186, 196, 214, 0.58) !important;
+}
